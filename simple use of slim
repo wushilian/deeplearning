@@ -1,0 +1,39 @@
+import tensorflow.contrib.slim as slim
+
+net = ...
+net = slim.conv2d(net, 256, [3, 3], scope='conv3_1')
+net = slim.conv2d(net, 256, [3, 3], scope='conv3_2')
+net = slim.conv2d(net, 256, [3, 3], scope='conv3_3')
+net = slim.max_pool2d(net, [2, 2], scope='pool2')
+net = slim.repeat(net, 3, slim.conv2d, 256, [3, 3], scope='conv3')
+net = slim.max_pool2d(net, [2, 2], scope='pool2')
+
+x = slim.fully_connected(x, 32, scope='fc/fc_1')
+x = slim.fully_connected(x, 64, scope='fc/fc_2')
+x = slim.fully_connected(x, 128, scope='fc/fc_3')
+slim.stack(x, slim.fully_connected, [32, 64, 128], scope='fc')
+
+x = slim.conv2d(x, 32, [3, 3], scope='core/core_1')
+x = slim.conv2d(x, 32, [1, 1], scope='core/core_2')
+x = slim.conv2d(x, 64, [3, 3], scope='core/core_3')
+x = slim.conv2d(x, 64, [1, 1], scope='core/core_4')
+slim.stack(x, slim.conv2d, [(32, [3, 3]), (32, [1, 1]), (64, [3, 3]), (64, [1, 1])], scope='core')
+
+with slim.arg_scope([slim.conv2d], padding='SAME',
+                      weights_initializer=tf.truncated_normal_initializer(stddev=0.01)
+                      weights_regularizer=slim.l2_regularizer(0.0005)):#预先定义相同的参数
+    net = slim.conv2d(inputs, 64, [11, 11], scope='conv1')
+    net = slim.conv2d(net, 128, [11, 11], padding='VALID', scope='conv2')
+    net = slim.conv2d(net, 256, [11, 11], scope='conv3')
+
+with slim.arg_scope([slim.conv2d, slim.fully_connected],
+                      activation_fn=tf.nn.relu,
+                      weights_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                      weights_regularizer=slim.l2_regularizer(0.0005)):
+  with slim.arg_scope([slim.conv2d], stride=1, padding='SAME'):
+    net = slim.conv2d(inputs, 64, [11, 11], 4, padding='VALID', scope='conv1')
+    net = slim.conv2d(net, 256, [5, 5],
+                      weights_initializer=tf.truncated_normal_initializer(stddev=0.03),
+                      scope='conv2')
+    net = slim.fully_connected(net, 1000, activation_fn=None, scope='fc')
+    
