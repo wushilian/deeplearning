@@ -1,0 +1,26 @@
+import tensorflow as tf
+from keras.applications.vgg19 import VGG19
+from keras.layers.core import Flatten
+from keras.models import Model
+import numpy as np
+import cv2
+from keras import backend as K
+
+inputs=tf.placeholder(dtype=tf.float32,shape=[None,224,224,3])
+
+def get_layer_name(base_model):
+    layer=base_model.layers
+    for i in range(len(layer)):
+        print(layer[i].name)#打印layer name
+        layer[i].trainable=True#设置是否固定权重
+    
+base_model = VGG19(include_top=False,weights='imagenet')#不包含全连接
+fintune=base_model(inputs)
+flatten=Flatten()(fintune)
+sess=tf.Session()
+K.set_session(sess)
+img=cv2.imread('e:\\1.jpg')
+img=cv2.resize(img,(224,224))
+img=np.reshape(img,(1,224,224,3))
+sess.run(tf.global_variables_initializer())
+feauture=sess.run(fintune,feed_dict={inputs:img})
