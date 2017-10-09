@@ -54,7 +54,7 @@ class BBoxUtility(object):
                                                 self._top_k,
                                                 iou_threshold=self._nms_thresh)
 
-    def iou(self, box):
+    def iou(self, box):#compute one box for all priors
         """Compute intersection over union for the box with all priors.
         # Arguments
             box: Box, numpy tensor of shape (4,).
