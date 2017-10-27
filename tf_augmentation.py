@@ -9,7 +9,7 @@ def preprocess(img):
    # im=np.fliplr(im)#左右翻转
     #im=np.flipud(im)#上下翻转
     im=transform.rotate(im,angle)
-    return  im
+    return  im*255
 train_samples_per_epoch = 50000  
 test_samples_per_epoch = 10000 
 
