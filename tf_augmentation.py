@@ -3,13 +3,28 @@ import numpy as np
 import numpy as np
 from skimage.util import random_noise
 from skimage import transform
-def preprocess(img):
-    angle=np.random.random_sample()*5#0-30
-    im=random_noise(img,'gaussian')#add noise
+def preprocess(im,angle=5,lr_crop=0.1,ud_crop=0.1):
+    angle=np.random.random_sample()*angle#0-30
+    lr_crop=np.random.random_sample()*lr_crop
+    ud_crop=np.random.random_sample()*ud_crop
+    seed=np.random.randint(0,4)
+    if seed==0:
+        im=im[0:int(im.shape[0]*(1-ud_crop)),int(im.shape[1]*lr_crop):]
+    if seed==1:
+        im=im[0:int(im.shape[0]*(1-ud_crop)),0:int(im.shape[1]*(1-lr_crop))]
+    if seed==2:
+        im = im[int(im.shape[0]*ud_crop):, 0:int(im.shape[1] * (1 - lr_crop))]
+    if seed==3:
+        im = im[int(im.shape[0] * ud_crop):,int(im.shape[1]*lr_crop):]
    # im=np.fliplr(im)#左右翻转
     #im=np.flipud(im)#上下翻转
     im=transform.rotate(im,angle)
-    return  im*255
+    seed=np.random.randint(0,2)
+    if seed==1:
+        im=random_noise(im,'gaussian')#add noise
+        return  im*255
+    else:
+        return im
 train_samples_per_epoch = 50000  
 test_samples_per_epoch = 10000 
 
