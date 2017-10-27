@@ -22,9 +22,8 @@ def preprocess(im,angle=5,lr_crop=0.1,ud_crop=0.1):
     seed=np.random.randint(0,2)
     if seed==1:
         im=random_noise(im,'gaussian')#add noise
-        return  im*255
-    else:
-        return im
+    return  im*255
+
 train_samples_per_epoch = 50000  
 test_samples_per_epoch = 10000 
 
