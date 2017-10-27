@@ -1,5 +1,15 @@
 import tensorflow as tf
 import numpy as np
+import numpy as np
+from skimage.util import random_noise
+from skimage import transform
+def preprocess(img):
+    angle=np.random.random_sample()*5#0-30
+    im=random_noise(img,'gaussian')#add noise
+   # im=np.fliplr(im)#左右翻转
+    #im=np.flipud(im)#上下翻转
+    im=transform.rotate(im,angle)
+    return  im
 train_samples_per_epoch = 50000  
 test_samples_per_epoch = 10000 
 
